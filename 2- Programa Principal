@@ -1,0 +1,21 @@
+REPORT z_alv_mf_ggcg.
+
+INCLUDE:  z_alv_mf_ggcg_top, "Contiene todas las variables
+          z_alv_mf_ggcg_se1, "Contiene las pantallas de seleccion
+          z_alv_mf_ggcg_f01. "Contiene la logica del programa
+
+START-OF-SELECTION.
+
+***********************Se declaran las subrutinas***********************************************
+  PERFORM get_data.         "Subrutina que obtiene la informacion
+  PERFORM build_field_cat.  "Subrutina que genera el catalogo de campos
+  PERFORM build_layout.
+
+  CASE abap_true.
+    WHEN p_list.
+      PERFORM display_alv_list.
+    WHEN p_grid.
+      PERFORM displar_alv_grid.
+    WHEN p_hier.
+
+  ENDCASE.
