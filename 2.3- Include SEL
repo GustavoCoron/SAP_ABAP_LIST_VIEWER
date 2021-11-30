@@ -1,0 +1,21 @@
+*&---------------------------------------------------------------------*
+*&  Include           Z_ALV_MF_GGCG_SE1
+*&---------------------------------------------------------------------*
+TABLES spfli.
+***************************BLOCK 1*******************************************
+
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE text-001.
+
+SELECT-OPTIONS: so_carr FOR spfli-carrid. "Airline Code
+
+SELECTION-SCREEN END OF BLOCK b1.
+
+***************************BLOCK 2*******************************************
+
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-002.
+
+PARAMETERS: p_list RADIOBUTTON GROUP alv, "ALV List
+            p_grid RADIOBUTTON GROUP alv, "ALV Grid
+            p_hier RADIOBUTTON GROUP alv. "ALV Hierarchical
+
+SELECTION-SCREEN END OF BLOCK b2.
