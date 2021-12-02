@@ -1,0 +1,21 @@
+*&---------------------------------------------------------------------*
+*&  Include           Z_ALV_MF_GGCG_TOP
+*&---------------------------------------------------------------------*
+
+TYPE-POOLS slis.
+TYPES: BEGIN OF gty_flights,              "Se declara la estructura de datos que contendra
+         carrid   TYPE s_carr_id,
+         connid   TYPE s_conn_id,
+         price    TYPE s_price,
+         currency TYPE s_currcode,
+         seatsmax TYPE s_seatsmax,
+         seatsocc TYPE s_seatsocc,
+       END OF gty_flights.
+DATA: gt_flights       TYPE TABLE OF gty_flights,
+      gt_fieldcat      TYPE slis_t_fieldcat_alv,
+      gs_layout        TYPE slis_layout_alv,
+      gt_events        TYPE slis_t_event, "Se agrega para el evento
+      gt_fieldcat_hier TYPE slis_t_fieldcat_alv.
+
+DATA: gt_header TYPE TABLE OF spfli,
+      gt_items  TYPE TABLE OF sflight.
