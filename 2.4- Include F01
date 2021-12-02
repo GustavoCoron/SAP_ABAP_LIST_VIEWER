@@ -1,0 +1,304 @@
+*&---------------------------------------------------------------------*
+*&  Include           Z_ALV_MF_GGCG_F01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Form  GET_DATA
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_data .
+  CASE abap_true.
+    WHEN p_list.
+      SELECT carrid
+      connid
+      price
+      currency
+      seatsmax
+      seatsocc
+        FROM sflight INTO TABLE gt_flights
+      WHERE carrid IN so_carr.
+    WHEN p_grid.
+      SELECT carrid
+        connid
+        price
+        currency
+        seatsmax
+        seatsocc
+        FROM sflight INTO TABLE gt_flights
+        WHERE carrid IN so_carr.
+    WHEN p_hier.
+  ENDCASE.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  BUILD_FIELD_CAT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM build_field_cat .
+  DATA ls_fieldcat TYPE slis_fieldcat_alv.
+  ls_fieldcat-fieldname = 'CARRID'.
+  ls_fieldcat-seltext_l = 'Airline Code'.
+  ls_fieldcat-seltext_m = 'Airline Code'.
+  APPEND ls_fieldcat TO gt_fieldcat.
+  CLEAR ls_fieldcat.
+  ls_fieldcat-fieldname = 'CONNID'.
+  ls_fieldcat-seltext_l = 'Flight Number'.
+  ls_fieldcat-seltext_m = 'Flight Number'.
+  APPEND ls_fieldcat TO gt_fieldcat.
+  CLEAR ls_fieldcat.
+  ls_fieldcat-fieldname = 'PRICE'.
+  ls_fieldcat-seltext_l = 'Price'.
+  ls_fieldcat-seltext_m = 'Price'.
+  APPEND ls_fieldcat TO gt_fieldcat.
+  CLEAR ls_fieldcat.
+  ls_fieldcat-fieldname = 'CURRENCY'.
+  ls_fieldcat-seltext_l = 'Currency'.
+  ls_fieldcat-seltext_m = 'Currency'.
+  APPEND ls_fieldcat TO gt_fieldcat.
+  CLEAR ls_fieldcat.
+  ls_fieldcat-fieldname = 'SEATSMAX'.
+  ls_fieldcat-seltext_l = 'Maximum capacity'.
+  ls_fieldcat-seltext_m = 'Maximum capacity'.
+  APPEND ls_fieldcat TO gt_fieldcat.
+  CLEAR ls_fieldcat.
+  ls_fieldcat-fieldname = 'SEATSOCC'.
+  ls_fieldcat-seltext_l = 'Occupied seats'.
+  ls_fieldcat-seltext_m = 'Occupied seats'.
+  APPEND ls_fieldcat TO gt_fieldcat.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_ALV_LIST
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_alv_list .
+
+  CALL FUNCTION 'REUSE_ALV_LIST_DISPLAY'
+    EXPORTING
+*     I_INTERFACE_CHECK  = ' '
+*     I_BYPASSING_BUFFER =
+*     I_BUFFER_ACTIVE    = ' '
+      i_callback_program = sy-repid
+*     I_CALLBACK_PF_STATUS_SET       = ' '
+*     I_CALLBACK_USER_COMMAND        = ' '
+*     I_STRUCTURE_NAME   =
+*     IS_LAYOUT          =
+      it_fieldcat        = gt_fieldcat
+*     IT_EXCLUDING       =
+*     IT_SPECIAL_GROUPS  =
+*     IT_SORT            =
+*     IT_FILTER          =
+*     IS_SEL_HIDE        =
+*     I_DEFAULT          = 'X'
+*     I_SAVE             = ' '
+*     IS_VARIANT         =
+      it_events          = gt_events
+*     IT_EVENT_EXIT      =
+*     IS_PRINT           =
+*     IS_REPREP_ID       =
+*     I_SCREEN_START_COLUMN          = 0
+*     I_SCREEN_START_LINE            = 0
+*     I_SCREEN_END_COLUMN            = 0
+*     I_SCREEN_END_LINE  = 0
+*     IR_SALV_LIST_ADAPTER           =
+*     IT_EXCEPT_QINFO    =
+*     I_SUPPRESS_EMPTY_DATA          = ABAP_FALSE
+*  IMPORTING
+*     E_EXIT_CAUSED_BY_CALLER        =
+*     ES_EXIT_CAUSED_BY_USER         =
+    TABLES
+      t_outtab           = gt_flights "Se agrega donde estran los datos
+    EXCEPTIONS
+      program_error      = 1
+      OTHERS             = 2.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+    WRITE 'Exeption'.
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAR_ALV_GRID
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM displar_alv_grid .
+
+  CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+    EXPORTING
+*     I_INTERFACE_CHECK  = ' '
+*     I_BYPASSING_BUFFER = ' '
+*     I_BUFFER_ACTIVE    = ' '
+      i_callback_program = sy-repid
+*     i_callback_pf_status_set = 'SET_PF_STATUS'
+*     i_callback_user_command  = 'USER_COMMAND'
+*     i_callback_top_of_page   = 'TOP_OF_PAGE' "Permite el cabecero del GRID
+*     I_CALLBACK_HTML_TOP_OF_PAGE       = ' '
+*     I_CALLBACK_HTML_END_OF_LIST       = ' '
+*     I_STRUCTURE_NAME   =
+*     I_BACKGROUND_ID    = ' '
+*     I_GRID_TITLE       =
+*     I_GRID_SETTINGS    =
+      is_layout          = gs_layout
+      it_fieldcat        = gt_fieldcat
+*     IT_EXCLUDING       =
+*     IT_SPECIAL_GROUPS  =
+*     IT_SORT            =
+*     IT_FILTER          =
+*     IS_SEL_HIDE        =
+*     I_DEFAULT          = 'X'
+*     I_SAVE             = ' '
+*     IS_VARIANT         =
+      it_events          = gt_events
+*     IT_EVENT_EXIT      =
+*     IS_PRINT           =
+*     IS_REPREP_ID       =
+*     I_SCREEN_START_COLUMN    = 0
+*     I_SCREEN_START_LINE      = 0
+*     I_SCREEN_END_COLUMN      = 0
+*     I_SCREEN_END_LINE  = 0
+*     I_HTML_HEIGHT_TOP  = 0
+*     I_HTML_HEIGHT_END  = 0
+*     IT_ALV_GRAPHICS    =
+*     IT_HYPERLINK       =
+*     IT_ADD_FIELDCAT    =
+*     IT_EXCEPT_QINFO    =
+*     IR_SALV_FULLSCREEN_ADAPTER        =
+* IMPORTING
+*     E_EXIT_CAUSED_BY_CALLER  =
+*     ES_EXIT_CAUSED_BY_USER   =
+    TABLES
+      t_outtab           = gt_flights
+    EXCEPTIONS
+      program_error      = 1
+      OTHERS             = 2.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+    WRITE 'Exception error'.
+  ENDIF.
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  BUILD_LAYOUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM build_layout .
+  gs_layout-zebra = abap_true.
+  gs_layout-edit = abap_true.
+ENDFORM.
+
+FORM user_command USING pv_ucomm    LIKE sy-ucomm
+                        ps_selfield TYPE slis_selfield.
+  DATA: ls_flight          TYPE gty_flights,
+        lv_available_seats TYPE i,
+        lv_mensaje         TYPE string.
+  IF pv_ucomm = '&IC1'.
+    READ TABLE gt_flights INTO ls_flight INDEX ps_selfield-tabindex.
+    IF sy-subrc EQ 0.
+
+      lv_available_seats = ls_flight-seatsmax - ls_flight-seatsocc.
+
+      lv_mensaje = lv_available_seats.
+      CONCATENATE 'Para el vuelo seleccionado hay '
+      lv_mensaje
+      'sillas disponibles'
+      INTO lv_mensaje
+      RESPECTING BLANKS.
+      MESSAGE lv_mensaje TYPE 'I'.
+    ENDIF.
+  ELSEIF pv_ucomm = '&AIR'.
+
+    IF ps_selfield-tabindex IS INITIAL.
+      MESSAGE 'Seleccione un registro para visualizar el nombre de la Compañía aérea' TYPE 'I'.
+    ELSE.
+      READ TABLE gt_flights INTO ls_flight INDEX ps_selfield-tabindex.
+      IF sy-subrc EQ 0.
+        SELECT
+          SINGLE carrname
+            INTO lv_mensaje
+            FROM scarr
+            WHERE carrid EQ ls_flight-carrid.
+        CONCATENATE 'El nombre de la aerolinea es: 'lv_mensaje INTO lv_mensaje RESPECTING BLANKS.
+        MESSAGE lv_mensaje TYPE 'I'.
+      ENDIF.
+    ENDIF.
+
+
+  ENDIF.
+ENDFORM.
+
+FORM set_pf_status USING rt_extab TYPE slis_t_extab.
+
+
+*******En este punto se manda a llamar el uso de barra para insertar iconos**
+  SET PF-STATUS 'CUSTOM_STATUS'.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  ADD_EVENTS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM add_events .
+
+  DATA ls_events TYPE slis_alv_event.
+  ls_events-name = 'TOP_OF_PAGE'.
+  ls_events-form = 'TOP_OF_PAGE'.
+  APPEND ls_events TO gt_events.
+
+ENDFORM.
+
+FORM top_of_page.
+
+  DATA: lt_list_commentary TYPE slis_t_listheader,
+        ls_list_commentary TYPE slis_listheader,
+        lv_total_lines     TYPE i,
+        lv_total_lines_str TYPE string.
+
+  DESCRIBE TABLE gt_flights LINES lv_total_lines.
+
+  CASE abap_true.
+    WHEN p_list.
+*** Se cuenta cuantos registros tiene la tabla
+      DESCRIBE TABLE gt_flights LINES lv_total_lines.
+      WRITE:  / 'Hour:', sy-uzeit ENVIRONMENT TIME FORMAT,
+              / 'Total number of records:', lv_total_lines.
+    WHEN p_grid.
+      ls_list_commentary-typ = 'S'.
+      WRITE sy-uzeit ENVIRONMENT TIME FORMAT TO ls_list_commentary-info.
+      CONCATENATE 'Hour:' ls_list_commentary-info INTO ls_list_commentary-info SEPARATED BY space.
+      APPEND ls_list_commentary TO lt_list_commentary.
+      ls_list_commentary-typ = 'S'.
+      lv_total_lines_str = lv_total_lines.
+      CONCATENATE 'Total number of records:' lv_total_lines_str INTO ls_list_commentary-info SEPARATED BY space.
+      APPEND ls_list_commentary TO lt_list_commentary.
+      CALL FUNCTION 'REUSE_ALV_COMMENTARY_WRITE'
+        EXPORTING
+          it_list_commentary = lt_list_commentary.
+  ENDCASE.
+
+
+
+ENDFORM.
